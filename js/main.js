@@ -5,17 +5,15 @@ const products = [
   {id: 4, title: 'Gamepad'},
 ];
 
-const makeProduct = (title = 'Item', price = '-1') =>
-  `<div class="product-item">
+const makeProduct = (id = 'bad_id', title = 'Item', price = '-1') =>
+  `<div id="${id}" class="product-item">
         <h3>${title}</h3>
         <p>${price}</p>
         <button class="by-btn">Добавить</button>
     </div>`;
 
 const renderProducts = list => {
-  const productList = list.map(product => makeProduct(product.title, product.price)).join('');
-
-  // console.log(productList);
+  const productList = list.map(product => makeProduct(product.id, product.title, product.price)).join('');
   document.querySelector('.products').innerHTML = productList;
 };
 
