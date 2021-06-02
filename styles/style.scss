@@ -4,7 +4,7 @@ $btn_radius: 10px;
 $btn_color_default: rgb(124, 189, 233);
 $offset: rgb(20, 20, 20);
 $btn_color_hover: $btn_color_default - $offset;
-$btn_color_pressed: $btn_color_hover - $offset;
+$btn_color_pressed: $btn_color_default - $offset * 2;
 $border: 1px solid $btn_color_default;
 h3{
   padding: 0;
