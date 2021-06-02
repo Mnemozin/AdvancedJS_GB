@@ -59,7 +59,6 @@ class ProductItem {
 }
 class Cart{
   constructor(){ }
-
 }
 
 class CartItem {
