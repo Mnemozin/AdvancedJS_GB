@@ -1,3 +1,24 @@
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
+// Переделать в ДЗ не использовать fetch а Promise! Дальше НЕ ИСПОЛЬЗОВАТЬ!!!
+let getRequest = url => {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status !== 200) {
+          reject('Error');
+        }
+        resolve(xhr.responseText);
+      }
+    };
+    xhr.send();
+  });
+};
+
+// –--------------------------------
+
 class ProductList {
   _goods;
   _allProducts;
@@ -5,29 +26,42 @@ class ProductList {
     this.container = container;
     this._goods = [];
     this._allProducts = [];
-    this._fetchGoods();
-    this._render();
+
+    this._getProducts().then(data => {
+      this._goods = data;
+      this._render();
+    });
+    // this.#fetchGoods();
+    // this.#render();
   }
 
-  calculateTotal() {
-    let total = 0;
-    for (let item of this._allProducts) {
-      total += item.price;
+  sum() {
+    return this._allProducts.reduce((sum, {price}) => sum + price, 0);
+  }
+
+  // #fetchGoods() {
+  //   getRequest(`${API}/catalogData.json`, (data) => {
+  //     console.log('response')
+  //     // console.log(data);
+  //     this.#goods = JSON.parse(data);
+  //     this.#render();
+  //     // console.log(this.#goods);
+  //   });
+  // }
+
+  async _getProducts() {
+    try {
+      const response = await fetch(`${API}/catalogData.json`);
+      return await response.json();
+    } catch (err) {
+      return console.log(err);
     }
-    return total;
-  }
-
-  _fetchGoods() {
-    this._goods = [
-      {id: 1, title: 'Notebook', price: 20000},
-      {id: 2, title: 'Mouse', price: 1500},
-      {id: 3, title: 'Keyboard', price: 5000},
-      {id: 4, title: 'Gamepad', price: 4500},
-    ];
   }
 
   _render() {
+    console.log('render');
     const block = document.querySelector(this.container);
+    console.log(this._goods);
 
     for (let product of this._goods) {
       const productObject = new ProductItem(product);
@@ -40,9 +74,9 @@ class ProductList {
 
 class ProductItem {
   constructor(product, img = 'https://via.placeholder.com/200x150') {
-    this.title = product.title;
+    this.title = product.product_name;
     this.price = product.price;
-    this.id = product.id;
+    this.id = product.id_product;
     this.img = img;
   }
 
@@ -56,14 +90,6 @@ class ProductItem {
               </div>
           </div>`;
   }
-}
-class Cart{
-  constructor(){ }
-
-}
-
-class CartItem {
-  constructor() {}
 }
 
 const catalog = new ProductList();
@@ -122,25 +148,3 @@ const catalog = new ProductList();
 // const catalog = new ProductList();
 // catalog.fetchGoods();
 // catalog.render();
-
-// const products = [
-//   {id: 1, title: 'Notebook', price: 20000},
-//   {id: 2, title: 'Mouse', price: 1500},
-//   {id: 3, title: 'Keyboard', price: 5000},
-//   {id: 4, title: 'Gamepad', price: 4500},
-// ];
-//
-// const renderProduct = (item, img='https://via.placeholder.com/200x150') => `<div class="product-item" data-id="${this.id}">
-//               <img src="${img}" alt="Some img">
-//               <div class="desc">
-//                   <h3>${item.title}</h3>
-//                   <p>${item.price} \u20bd</p>
-//                   <button class="buy-btn">Купить</button>
-//               </div>
-//           </div>`;
-//
-// const renderProducts = list => {
-// document.querySelector('.products').insertAdjacentHTML('beforeend', list.map(item => renderProduct(item)).join(''));
-// };
-//
-// renderProducts(products);
